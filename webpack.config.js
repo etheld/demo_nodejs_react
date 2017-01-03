@@ -1,34 +1,52 @@
-const webpack = require('webpack');
-const path = require('path');
-
 module.exports = {
-  entry: path.join(__dirname, 'src', 'app-client.js'),
+  entry: getEntrySources(['./src/entry.js']),
   output: {
-    path: path.join(__dirname, 'src', 'static', 'js'),
-    filename: 'bundle.js'
+    publicPath: 'http://localhost:8080/',
+    filename: 'build/bundle.js'
   },
+  devtool: 'eval',
   module: {
-    loaders: [{
-      test: path.join(__dirname, 'src'),
-      loader: ['babel-loader'],
-      query: {
-        cacheDirectory: 'babel_cache',
-        presets: ['react', 'es2015']
+    preLoaders: [
+      {
+        test: /\.jsx?$/,
+        exclude: /(node_modules|bower_components)/,
+        loader: 'source-map'
       }
-    }]
-  },
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-    }),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: { warnings: false },
-      mangle: true,
-      sourcemap: false,
-      beautify: false,
-      dead_code: true
-    })
-  ]
+    ],
+    loaders: [
+      {
+        test: /\.scss$/,
+        include: /src/,
+        loaders: [
+          'style',
+          'css',
+          'autoprefixer?browsers=last 3 versions',
+          'sass?outputStyle=expanded'
+        ]
+      },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        loaders: [
+          'url?limit=8192',
+          'img'
+        ]
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: /(node_modules|bower_components)/,
+        loaders: [
+          'react-hot',
+          'babel?presets[]=stage-0,presets[]=react,presets[]=es2015'
+        ]
+      }
+    ]
+  }
 };
+
+function getEntrySources(sources) {
+  if (process.env.NODE_ENV !== 'production') {
+    sources.push('webpack-dev-server/client?http://localhost:8080');
+    sources.push('webpack/hot/only-dev-server');
+  }
+  return sources;
+}
