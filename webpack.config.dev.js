@@ -6,13 +6,13 @@ export default {
   devtool: 'cheap-module-eval-source-map',
   noInfo: false,
   entry: [
-    'eventsource-polyfill',
-    'webpack-hot-middleware/client?reload=true',
+    'eventsource-polyfill', // necessary for hot reloading with IE
+    'webpack-hot-middleware/client?reload=true', //note that it reloads the page if hot module reloading fails.
     './src/index'
   ],
   target: 'web',
   output: {
-    path: __dirname + '/dist',
+    path: __dirname + '/dist', // Note: Physical files are only output by the production build task `npm run build`.
     publicPath: '/',
     filename: 'bundle.js'
   },
@@ -21,7 +21,12 @@ export default {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
+    new webpack.NoErrorsPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'API_HOST': JSON.stringify('http://localhost:5000')
+      } 
+    })
   ],
   module: {
     loaders: [

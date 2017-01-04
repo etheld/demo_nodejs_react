@@ -1,20 +1,14 @@
-var React = require('react');
-var ReactDOM = require('react-dom');
-var ProductData = require('./ProductData');
-var CartAPI = require('./utils/CartAPI');
-var Template = require('./components/Template');
+import React from 'react'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+import { createStore, applyMiddleware } from 'redux'
+import dataHandler from './dataHandler/restapi.js'
+import todoApp from './reducers'
+// import App from './components/App'
+import TodoList from './components/TodoList'
 
-ProductData.init();
-CartAPI.getProductData();
+let store = createStore(todoApp,{}, applyMiddleware(dataHandler))
 
-var App = React.createClass({
-  render: function(){
-    return (
-      <Template />
-    );
-  }
-});
+render( <Provider store={store}><TodoList /></Provider>, document.getElementById('myApp'));
 
-ReactDOM.render(<App />, document.getElementById('myApp'));
-
-module.exports = App;
+store.dispatch({type: 'GET_TODO_DATA'})
