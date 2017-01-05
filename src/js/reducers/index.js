@@ -1,8 +1,8 @@
-import { combineReducers } from 'redux'
-import todos from './todos'
+import {combineReducers} from 'redux';
+import posts from './postReducer';
 
-const todoApp = combineReducers({
-  todos
+const rootReducer = combineReducers({
+  posts
 })
 
-export default todoApp
+export default rootReducer;

@@ -9,6 +9,6 @@ import TodoList from './components/TodoList'
 
 let store = createStore(todoApp,{}, applyMiddleware(dataHandler))
 
-render( <Provider store={store}><TodoList /></Provider>, document.getElementById('myApp'));
+render( <Provider store={store}></Provider>, document.getElementById('myApp'));
 
 store.dispatch({type: 'GET_TODO_DATA'})
